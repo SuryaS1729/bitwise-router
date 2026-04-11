@@ -14,6 +14,11 @@ export namespace AuthModel {
         token:t.String()
     })
 
+    export const signInFailedResponseSchema = t.Object({
+        message:t.Literal("error while signing in, Incorrect Credentials")
+    })
+    export type signInFailedResponseSchema = typeof signInFailedResponseSchema.static
+
     export type signInResponseSchema = typeof signInResponseSchema.static
 
 
