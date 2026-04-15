@@ -1,9 +1,15 @@
 import { Elysia } from "elysia";
 import { AuthModel } from "./models";
 import { AuthService } from "./service";
-import { prisma } from "db";
+import jwt from "@elysiajs/jwt";
 
 export const app = new Elysia({ prefix: "auth" })
+  .use(
+    jwt({
+      name: "jwt",
+      secret: process.env.JWT_SECRET!,
+    }),
+  )
   .post(
     "/sign-up",
     async ({ body, status }) => {
@@ -29,11 +35,30 @@ export const app = new Elysia({ prefix: "auth" })
   )
   .post(
     "/sign-in",
-    async ({ body }) => {
-      const userToken = await AuthService.signin(body.email, body.password);
-      return {
-        token: userToken,
-      };
+    async ({ jwt, body, set, cookie: { auth } }) => {
+      const { correctCredentials, userId } = await AuthService.signin(
+        body.email,
+        body.password,
+      );
+
+      if (correctCredentials && userId) {
+        const token = await jwt.sign({ userId });
+
+        auth.set({
+          value: token,
+          httpOnly: true,
+          maxAge: 7 * 86400,
+        });
+
+        return {
+          message: "Signed in successfully",
+        } ;
+      } else {
+        set.status = 400; // ✅ match schema
+        return {
+          message: "error while signing in, Incorrect Credentials",
+        } ;
+      }
     },
     {
       body: AuthModel.signInSchema,
