@@ -23,4 +23,4 @@ export const app = new Elysia({ prefix: "/api-keys" })
   .post("/", () => {})
   .get("/", () => {})
   .post("/disable", () => {})
-  .delete("/", () => {});
+  .delete("/:id", () => {});
