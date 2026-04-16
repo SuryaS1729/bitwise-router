@@ -27,10 +27,11 @@ export namespace ApiKeyModel {
     typeof disableApiKeyResponseSchema.static;
 
   export const getApiKeysResponseSchema = t.Object({
-    name: t.String(),
-    apiKey: t.String(),
-    lastUsed: t.String(),
-    creditsConsumed: t.String(),
+    apiKeys: t.Array(
+      t.Object({
+        id: t.String(),
+      }),
+    ),
   });
   export type getApiKeysResponseSchema = typeof getApiKeysResponseSchema.static;
 

@@ -1,5 +1,7 @@
 import jwt from "@elysiajs/jwt";
 import Elysia from "elysia";
+import { ApiKeyService } from "./service";
+import { ApiKeyModel } from "./models";
 
 export const app = new Elysia({ prefix: "/api-keys" })
   .use(
@@ -20,7 +22,38 @@ export const app = new Elysia({ prefix: "/api-keys" })
       userId: decoded.userId as string,
     };
   })
-  .post("/", () => {})
-  .get("/", () => {})
+  .post(
+    "/",
+    async ({ userId, body }) => {
+      const { id, apiKey } = await ApiKeyService.createApiKey(
+        body.name,
+        Number(userId),
+      );
+      return {
+        id,
+        apiKey,
+      };
+    },
+    {
+      body: ApiKeyModel.createApiKeySchema,
+      response: {
+        200: ApiKeyModel.createApiKeyResponseSchema,
+      },
+    },
+  )
+  .get(
+    "/",
+    async ({ userId, body }) => {
+      const apiKeys = await ApiKeyService.getApiKeys(Number(userId));
+      return {
+        apiKeys: apiKeys,
+      };
+    },
+    {
+      response: {
+        200: ApiKeyModel.getApiKeysResponseSchema,
+      },
+    },
+  )
   .post("/disable", () => {})
   .delete("/:id", () => {});

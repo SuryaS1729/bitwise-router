@@ -1,4 +1,5 @@
 import { prisma } from "db";
+import { UserScalarFieldEnum } from "db/generated/prisma/internal/prismaNamespace";
 const API_KEY_LENGTH = 20;
 const ALPHABET_SET = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOKJHGVFC2345672E4";
 export abstract class ApiKeyService {
@@ -29,5 +30,21 @@ export abstract class ApiKeyService {
       id: apiKeyDb.id.toString(),
       apiKey,
     };
+  }
+
+  static async getApiKeys(userId: number) {
+    const apiKeys = await prisma.apiKey.findMany({
+      where: {
+        userId: userId,
+      },
+    });
+
+    return apiKeys.map((apikey) => ({
+      id: apikey.id.toString(),
+      apiKey: apikey.apiKey,
+      name: apikey.name,
+      creditsConsumed: apikey.creditsConsumed,
+      lastUsed: apikey.lastUsed,
+    }));
   }
 }
