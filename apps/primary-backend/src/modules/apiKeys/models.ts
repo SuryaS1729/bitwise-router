@@ -13,18 +13,26 @@ export namespace ApiKeyModel {
   export type createApiKeyResponseSchema =
     typeof createApiKeyResponseSchema.static;
 
-  export const disableApiKeySchema = t.Object({
+  export const updateApiKeySchema = t.Object({
     id: t.String(),
+    disabled: t.Boolean(),
   });
 
-  export type disableApiKeySchema = typeof disableApiKeySchema.static;
+  export type updateApiKeySchema = typeof updateApiKeySchema.static;
 
-  export const disableApiKeyResponseSchema = t.Object({
-    message: t.Literal("Disabled Api Key successfully"),
+  export const updateApiKeyResponseSchema = t.Object({
+    message: t.Literal("updated Api Key successfully"),
   });
 
-  export type disableApiKeyResponseSchema =
-    typeof disableApiKeyResponseSchema.static;
+  export type updateApiKeyResponseSchema =
+    typeof updateApiKeyResponseSchema.static;
+
+  export const updateApiKeyFailedResponseSchema = t.Object({
+    message: t.Literal("updating Api Key failed"),
+  });
+
+  export type updateApiKeyFailedResponseSchema =
+    typeof updateApiKeyFailedResponseSchema.static;
 
   export const getApiKeysResponseSchema = t.Object({
     apiKeys: t.Array(

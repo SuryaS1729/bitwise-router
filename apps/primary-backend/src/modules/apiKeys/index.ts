@@ -55,5 +55,30 @@ export const app = new Elysia({ prefix: "/api-keys" })
       },
     },
   )
-  .post("/disable", () => {})
+  .put(
+    "/",
+    async ({ body, userId, status }) => {
+      try {
+        await ApiKeyService.updateApiKeyDisabled(
+          Number(body.id),
+          Number(userId),
+          body.disabled,
+        );
+        return {
+          message: "updated Api Key successfully",
+        };
+      } catch (e) {
+        return status(411, {
+          message: "updating Api Key failed",
+        });
+      }
+    },
+    {
+      body: ApiKeyModel.updateApiKeySchema,
+      response: {
+        200: ApiKeyModel.updateApiKeyResponseSchema,
+        411: ApiKeyModel.updateApiKeyFailedResponseSchema,
+      },
+    },
+  )
   .delete("/:id", () => {});
