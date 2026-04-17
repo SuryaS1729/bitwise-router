@@ -38,6 +38,11 @@ export namespace ApiKeyModel {
     apiKeys: t.Array(
       t.Object({
         id: t.String(),
+        apiKey: t.String(),
+        name: t.String(),
+        creditsConsumed: t.Number(),
+        lastUsed: t.Nullable(t.Date()),
+        disabled: t.Boolean(),
       }),
     ),
   });
@@ -49,4 +54,11 @@ export namespace ApiKeyModel {
 
   export type deleteApiKeyResponseSchema =
     typeof deleteApiKeyResponseSchema.static;
+
+  export const deleteApiKeyFailedResponseSchema = t.Object({
+    message: t.Literal("deleting Api Key failed"),
+  });
+
+  export type deleteApiKeyFailedResponseSchema =
+    typeof deleteApiKeyFailedResponseSchema.static;
 }

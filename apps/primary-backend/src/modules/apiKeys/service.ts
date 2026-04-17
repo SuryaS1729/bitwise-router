@@ -11,6 +11,8 @@ export abstract class ApiKeyService {
     }
     return `bt-dharma-v1-${suffixKey}`;
   }
+
+  //CREATING AN API KEY
   static async createApiKey(
     name: string,
     userId: number,
@@ -31,11 +33,12 @@ export abstract class ApiKeyService {
       apiKey,
     };
   }
-
+  //GET API KEYS
   static async getApiKeys(userId: number) {
     const apiKeys = await prisma.apiKey.findMany({
       where: {
         userId: userId,
+        deleted: false,
       },
     });
 
@@ -45,9 +48,10 @@ export abstract class ApiKeyService {
       name: apikey.name,
       creditsConsumed: apikey.creditsConsumed,
       lastUsed: apikey.lastUsed,
+      disabled: apikey.disabled,
     }));
   }
-
+  // UPDATE API KEYS{DISABLING AND ENABLING}
   static async updateApiKeyDisabled(
     apiKeyId: number,
     userId: number,
@@ -55,11 +59,24 @@ export abstract class ApiKeyService {
   ) {
     await prisma.apiKey.update({
       where: {
-        id: Number(apiKeyId),
+        id: apiKeyId,
         userId: userId,
       },
       data: {
         disabled,
+      },
+    });
+  }
+
+  //DELETING AN API KEYS
+  static async delete(id: number, userId: number) {
+    await prisma.apiKey.update({
+      where: {
+        id,
+        userId,
+      },
+      data: {
+        deleted: true,
       },
     });
   }

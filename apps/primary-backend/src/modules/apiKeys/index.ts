@@ -81,4 +81,24 @@ export const app = new Elysia({ prefix: "/api-keys" })
       },
     },
   )
-  .delete("/:id", () => {});
+  .delete(
+    "/:id",
+    async ({ params: { id }, userId, status }) => {
+      try {
+        await ApiKeyService.delete(Number(id), Number(userId));
+        return {
+          message: "Api Key Deleted successfully",
+        };
+      } catch (e) {
+        return status(411, {
+          message: "deleting Api Key failed",
+        });
+      }
+    },
+    {
+      response: {
+        200: ApiKeyModel.deleteApiKeyResponseSchema,
+        411: ApiKeyModel.deleteApiKeyFailedResponseSchema,
+      },
+    },
+  );
